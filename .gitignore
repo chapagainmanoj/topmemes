@@ -4,3 +4,4 @@ output/*
 assets/*
 *.pyc
 *.log
+geckodriver.log

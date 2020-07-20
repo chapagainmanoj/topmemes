@@ -279,3 +279,17 @@ console.error: (new TypeError("container.node.targetFront is null", "resource://
 1595232862845	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: about:reader*
 1595232864446	Marionette	INFO	Listening on port 35093
 1595232864549	Marionette	WARN	TLS certificate errors will be ignored for this session
+1595232965252	Marionette	INFO	Stopped listening on port 35093
+[Parent 245438, Gecko_IOThread] WARNING: pipe error: Broken pipe: file /build/firefox/src/firefox-70.0.1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 728
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
+IPDL protocol error: Handler returned error code!
+
+###!!! [Parent][DispatchAsyncMessage] Error: PLayerTransaction::Msg_ReleaseLayer Processing error: message was deserialized, but the handler returned false (indicating failure)
+
