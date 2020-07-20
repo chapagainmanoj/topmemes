@@ -1,0 +1,4 @@
+.virtualenvs/
+settings*
+output/*
+assets/*
