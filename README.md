@@ -1,3 +1,3 @@
 # topmemes
 - downloads top memes from subreddits
-- upload to insta page
+- upload to insta page with selenium

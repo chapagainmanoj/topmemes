@@ -1,3 +1,3 @@
-USERNAME = ''
+USERNAME = 'memes_orgy'
 PASSWORD = ''
-DRI_PATH = ""
+DRI_PATH = ''
