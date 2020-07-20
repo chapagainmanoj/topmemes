@@ -1,5 +1,5 @@
 .virtualenvs/
-settings*
+settings.py
 output/*
 assets/*
 *.pyc

@@ -1,0 +1,3 @@
+USERNAME = ''
+PASSWORD = ''
+DRI_PATH = ""
