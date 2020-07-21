@@ -5,7 +5,7 @@ from datetime import datetime
 from selenium.webdriver.common.keys import Keys
 
 from .settings import USERNAME, PASSWORD
-
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 HASH_TAGS = "\n \n #meme #memes #funny #dankmemes #memesdaily #funnymemes #lol #follow #dank #humor #like #love #dankmeme #tiktok #lmao #instagram #comedy #ol #anime #fun #dailymemes #memepage #edgymemes #offensivememes #memestagram #funnymeme #memer #covid19 #coronavirus"
 
 def upload_post(posts):
@@ -15,7 +15,6 @@ def upload_post(posts):
     profile.set_preference("general.useragent.override", user_agent)
     driver = webdriver.Firefox(profile)
     driver.set_window_size(360,640)
-    current_path = os.getcwd()
 
     url = 'https://www.instagram.com/accounts/login/?source=auth_switcher'
     driver.get(url)
@@ -50,7 +49,7 @@ def upload_post(posts):
                 #button1[-1].click()
 
                 field = driver.find_element_by_css_selector("input[type='file']")
-                field.send_keys("{}/assets/{}".format(current_path, post["file_name"]))
+                field.send_keys("{}/assets/{}".format(ROOT_DIR["file_name"]))
                 webdriver.ActionChains(driver).send_keys(Keys.ESCAPE).perform()
 
                 time.sleep(7)
@@ -74,7 +73,7 @@ def upload_post(posts):
                 button[-1].click()
 
 
-                print('Success!'+ post['title'])
+                print('Upload Success! '+ post['title'])
                 time.sleep(2)
                 meta = {}
                 meta['posted_on'] = datetime.now().isoformat()
