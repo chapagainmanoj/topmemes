@@ -5,4 +5,4 @@ assets/*
 *.pyc
 *.log
 geckodriver.log
-__pycache__/*
+__pycache__/
