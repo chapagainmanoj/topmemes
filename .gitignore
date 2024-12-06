@@ -6,3 +6,4 @@ assets/*
 *.log
 geckodriver.log
 __pycache__/
+.venv/
