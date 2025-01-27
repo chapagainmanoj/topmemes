@@ -126,7 +126,7 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
                 elif ext in [".gifv", ".gif"]:
                     mp4_path = convert_gif_to_mp4(image_path)
                     if mp4_path:
-                        instaBot.video_upload(mp4_path, caption)
+                        instaBot.clip_upload(mp4_path, caption)
                         post["posted_on"] = datetime.now().isoformat()
                     else:
                         post["error"] = "Failed to convert GIF to MP4"
@@ -135,7 +135,7 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
                     video_name = post["id"] + ".mp4"
                     video_path = Path(f"{ROOT_DIR}/assets/{video_name}")
                     if download_video(video_url, video_path):
-                        instaBot.video_upload(video_path, caption)
+                        instaBot.clip_upload(video_path, caption)
                         post["posted_on"] = datetime.now().isoformat()
                     else:
                         post["error"] = "Failed to download video"
