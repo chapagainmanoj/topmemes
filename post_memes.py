@@ -8,9 +8,15 @@ from dotenv import dotenv_values
 from moviepy.editor import VideoFileClip
 from datetime import datetime
 from pathlib import Path
+import yt_dlp
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-SUBS = ["r/AdviceAnimals", "r/memes", "r/MemeEconomy", "r/dankmemes"]
+SUBS = [
+    "r/funny",  #
+    # "r/memes",
+    # "r/AdviceAnimals",
+    # "r/dankmemes",
+]
 # HASH_TAGS = "\n \n #memes_orgy #meme #memes #funny #dankmemes #memesdaily #funnymemes #lol #follow #dank #humor #like #love #dankmeme #tiktok #lmao #instagram #comedy #ol #anime #fun #dailymemes #memepage #edgymemes #offensivememes #memestagram #funnymeme"
 HASH_TAGS = ""
 
@@ -29,7 +35,7 @@ def convert_gif_to_mp4(gif_path: Path) -> Path:
 def is_modified_today(file_name: str) -> bool:
     today = datetime.now().date()
     try:
-        filetime = datetime.fromtimestamp(os.path.getctime(file_name))
+        filetime = datetime.fromtimestamp(os.path.getmtime(file_name))
     except Exception as e:
         print(f"Error checking file modification date: {e}")
         return False
@@ -81,6 +87,22 @@ def download_assets(subreddit: str) -> None:
         raise
 
 
+def download_video(url: str, output_path: Path) -> bool:
+    ydl_opts = {
+        "outtmpl": str(output_path),
+        "format": "bestvideo+bestaudio/best",
+        "merge_output_format": "mp4",
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        return True
+    except Exception as e:
+        print(f"Error downloading video: {e}")
+        return False
+
+
 def upload_from(instaBot: Client, subreddit: str) -> None:
     file_name = subreddit.replace("/", "_", 1)
     with open(f"{ROOT_DIR}/output/{file_name}.json", "r") as f:
@@ -88,7 +110,8 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
         print(f"Uploading to insta from {subreddit}")
     for post in posts:
         if (
-            post.get("post_hint") == "image" and "posted_on" not in post
+            post.get("post_hint") in ["image", "hosted:video"]
+            and "posted_on" not in post
             # and "error" not in post
         ):
             caption = post.get("title") + HASH_TAGS
@@ -107,15 +130,15 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
                         post["posted_on"] = datetime.now().isoformat()
                     else:
                         post["error"] = "Failed to convert GIF to MP4"
-                elif post.get("is_video"):
-                    video = requests.get(post["url"])
-                    if video.status_code == 200:
-                        video_name = post["url"].split("/")[-1]
-                        video_path = Path(f"{ROOT_DIR}/assets/{video_name}")
-                        with open(video_path, "wb") as video_file:
-                            video_file.write(video.content)
-                            instaBot.video_upload(video_path, caption)
-                            post["posted_on"] = datetime.now().isoformat
+                elif post.get("is_video") and post.get("post_hint") == "hosted:video":
+                    video_url = post["media"]["reddit_video"]["dash_url"]
+                    video_name = post["id"] + ".mp4"
+                    video_path = Path(f"{ROOT_DIR}/assets/{video_name}")
+                    if download_video(video_url, video_path):
+                        instaBot.video_upload(video_path, caption)
+                        post["posted_on"] = datetime.now().isoformat()
+                    else:
+                        post["error"] = "Failed to download video"
                 else:
                     print(f"Unsupported file format: {post['url']}")
             except Exception as e:
