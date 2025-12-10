@@ -8,3 +8,4 @@ geckodriver.log
 __pycache__/
 .venv/
 .env
+__pycache__/*

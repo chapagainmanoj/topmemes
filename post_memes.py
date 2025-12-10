@@ -11,11 +11,15 @@ from pathlib import Path
 import yt_dlp
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-SUBS = [
+MEMES_SUBS = [
     "r/funny",  #
     # "r/memes",
     # "r/AdviceAnimals",
     # "r/dankmemes",
+]
+
+SOCCER_SUBS = [
+    "r/soccercirclejerk",
 ]
 # HASH_TAGS = "\n \n #memes_orgy #meme #memes #funny #dankmemes #memesdaily #funnymemes #lol #follow #dank #humor #like #love #dankmeme #tiktok #lmao #instagram #comedy #ol #anime #fun #dailymemes #memepage #edgymemes #offensivememes #memestagram #funnymeme"
 HASH_TAGS = ""
@@ -110,8 +114,7 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
         print(f"Uploading to insta from {subreddit}")
     for post in posts:
         if (
-            post.get("post_hint") in ["image", "hosted:video"]
-            and "posted_on" not in post
+            post.get("post_hint") in ["image", "hosted:video"] and "posted_on" not in post
             # and "error" not in post
         ):
             caption = post.get("title") + HASH_TAGS
@@ -150,17 +153,53 @@ def upload_from(instaBot: Client, subreddit: str) -> None:
 
 
 if __name__ == "__main__":
-    user_subs = sys.argv[1:]
+    arguments = sys.argv[1:]
+
+    user_subs = []
+    config = dotenv_values(".env")
+
+    if not config:
+        print("No .env file found")
+        sys.exit(1)
+
+    if (
+        not config["USERNAME"]
+        or not config["PASSWORD"]
+        or not config["SOCCER_ACCOUNT_USERNAME"]
+        or not config["SOCCER_ACCOUNT_PASSWORD"]
+    ):
+        print("Missing username or password in .env file")
+        sys.exit(1)
+
+    username = config["USERNAME"]
+    password = config["PASSWORD"]
+    session_id = config.get("SESSION_ID")
+
+    if not arguments:
+        user_subs = MEMES_SUBS
+
+    if arguments and arguments[0] in ["soccer", "football"]:
+        user_subs = SOCCER_SUBS
+        username = config["SOCCER_ACCOUNT_USERNAME"]
+        password = config["SOCCER_ACCOUNT_PASSWORD"]
 
     if not user_subs:
-        user_subs = SUBS
+        print("Invalid arguments")
+        print("Usage: python post_memes.py football")
+        print("or python post_memes.py")
+        sys.exit(1)
+
+    print(f"Logging in as {username} and password {password}")
+    client = Client()
+    if session_id:
+        client.login_by_sessionid(session_id)
+    else:
+        client.login(username, password)
+
+    print(user_subs)
 
     save_from_list(user_subs)
 
-    instaBot = Client()
-    config = dotenv_values(".env")
-    instaBot.login(username=config["USERNAME"], password=config["PASSWORD"])
-
     for current_sub in user_subs:
         download_assets(current_sub)
-        upload_from(instaBot, current_sub)
+        upload_from(client, current_sub)
