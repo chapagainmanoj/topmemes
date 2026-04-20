@@ -1,11 +1,22 @@
 .virtualenvs/
-settings.py
-output/*
-assets/*
+.venv/
+__pycache__/
+__pycache__/*
 *.pyc
 *.log
-geckodriver.log
-__pycache__/
-.venv/
+
+# Secrets
 .env
-__pycache__/*
+
+# Runtime data
+output/*
+assets/*
+posted_ids.json
+session_*.json
+
+# OS files
+.DS_Store
+
+# Legacy
+geckodriver.log
+settings.py
